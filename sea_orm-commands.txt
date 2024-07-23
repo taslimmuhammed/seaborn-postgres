@@ -1,0 +1,2 @@
+sea-orm-cli generate entity -o src/database // to generate the model files
+before this make sure that you have give DATABASE_URL in the .env file, variable name cannot be changed, also make the tables before it for model creation

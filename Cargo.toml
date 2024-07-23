@@ -1,0 +1,14 @@
+[package]
+name = "database"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7.5"
+dotenvy = "0.15.7"
+dotenvy_macro = "0.15.7"
+sea-orm = { version = "0.12.15", features = ["debug-print", "postgres-array", "runtime-tokio", "sqlx-postgres"] }
+tokio = { version = "1.38.1", features = ["full"] }
+tower-http = { version = "0.5.2", features = ["cors"] }
+sqlx = { version = "0.7.4", features = ["runtime-tokio"] }
+serde = "1.0.204"
