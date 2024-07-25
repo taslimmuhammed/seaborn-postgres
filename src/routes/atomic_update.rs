@@ -14,7 +14,7 @@ pub struct RequestTask {
     pub user_id: Option<i32>,
     pub is_default: Option<bool>,
 }
-pub async fn update_one(
+pub async fn atomic_update(
     Extension(database):Extension<DatabaseConnection>,
     Path(task_id):Path<i32>,
     Json(request_task):Json<RequestTask>
