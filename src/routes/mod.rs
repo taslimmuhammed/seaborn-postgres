@@ -3,7 +3,10 @@ mod get_task;
 mod atomic_update;
 mod partial_update;
 mod delete;
-use delete::delete_task;
+mod create_accout;
+
+use create_accout::create_account;
+use delete::{delete_task, soft_delete};
 use create_tasks::create_tasks;
 use get_task::{get_one_task, get_all_task};
 use atomic_update::atomic_update;
@@ -22,6 +25,8 @@ pub fn create_routes(database:DatabaseConnection)-> Router{
         .route("/atomic_update/:task_id", put(atomic_update))
         .route("/partial_update/:task_id",patch(partial_update))
         .route("/delete/:task_id", delete(delete_task))
+        .route("/soft_delete/:task_id", delete(soft_delete))
+        .route("/create_account", post(create_account))
         .layer(Extension(database))
         .layer(cors);
     app

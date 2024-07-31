@@ -1,5 +1,5 @@
 use axum::{extract::{Path, Query}, http::StatusCode, Extension, Json};
-use sea_orm::{ ColumnTrait, Condition, DatabaseConnection, EntityTrait, QueryFilter};
+use sea_orm::{ prelude::DateTimeWithTimeZone, ColumnTrait, Condition, DatabaseConnection, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use crate::database::tasks::{self, Entity as Tasks};
 #[derive(Serialize, Deserialize)]
@@ -7,7 +7,8 @@ pub struct ResponseTask{
     id:i32,
     title:String,
     priority:Option<String>,
-    description:Option<String>
+    description:Option<String>,
+    deleted_at: Option<DateTimeWithTimeZone>
 }
 #[derive( Deserialize)]
 pub struct PriorityQuery{
@@ -24,7 +25,8 @@ pub async fn get_one_task(
             id:task.id,
             title:task.title,
             priority:task.priority,
-            description:task.description
+            description:task.description,
+            deleted_at:task.deleted_at
         }))
     }else{
         Err(StatusCode::NOT_FOUND)
@@ -54,7 +56,8 @@ pub async fn get_all_task(
             id:task.id,
             title:task.title,
             priority:task.priority,
-            description:task.description
+            description:task.description,
+            deleted_at:task.deleted_at
         })
         .collect();
     Ok(Json(tasks)) 

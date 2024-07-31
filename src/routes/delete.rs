@@ -31,7 +31,7 @@ pub async fn delete_task(
 pub async fn soft_delete(
     Path(task_id):Path<i32>,
     Extension(database):Extension<DatabaseConnection>
-)-> Result<(), StatusCode>{
+)->Result<(),StatusCode>{
     let mut task = if let Some(task) = tasks::Entity::find_by_id(task_id)
         .one(&database)
         .await
@@ -42,6 +42,10 @@ pub async fn soft_delete(
         };
     let now = chrono::Utc::now();
     task.deleted_at = Set(Some(now.into()));
-    
+    tasks::Entity::update(task)
+        .exec(&database)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
     Ok(())
 }
