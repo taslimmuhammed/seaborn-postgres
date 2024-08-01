@@ -7,7 +7,7 @@ mod users;
 
 use core::sync;
 
-use users::{create_account, login_user};
+use users::{create_account, login_user, logout};
 use delete::{delete_task, soft_delete};
 use create_tasks::create_tasks;
 use get_task::{get_one_task, get_all_task};
@@ -30,6 +30,7 @@ pub fn create_routes(database:DatabaseConnection)-> Router{
         .route("/soft_delete/:task_id", delete(soft_delete))
         .route("/create_account", post(create_account))
         .route("/users/login", post(login_user))
+        .route("/users/login", post(logout))
         .route("/test", post(test_func))
         .layer(Extension(database))
         .layer(cors);

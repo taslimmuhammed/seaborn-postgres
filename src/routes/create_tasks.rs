@@ -14,7 +14,6 @@ pub async fn create_tasks(
     Extension(database):Extension<DatabaseConnection>,
     Json(request_task):Json<RequestTask>,
 )-> Result<(), StatusCode>{
-    dbg!(headers.clone().get("authorization").unwrap().to_str().unwrap());
     let token = headers.get("authorization").unwrap().to_str().unwrap();
     let token = remove_bearer_prefix(token);
     let user = if let Some(user) = users::Entity::find()

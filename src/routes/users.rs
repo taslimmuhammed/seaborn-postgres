@@ -1,4 +1,4 @@
-use axum::{http::StatusCode, Extension, Json};
+use axum::{http::{HeaderMap, StatusCode}, Extension, Json};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,IntoActiveModel, Set};
 use serde::{Deserialize, Serialize};
 
@@ -61,4 +61,26 @@ pub async fn login_user(
     }
     
 
+}
+
+pub async fn logout(
+    headers: HeaderMap,
+    Extension(database):Extension<DatabaseConnection>
+)-> Result<(), StatusCode>{
+    let token = headers.get("authorization").unwrap().to_str().unwrap();
+    let token =token.trim_start_matches("Bearer ").trim();
+    let mut user = if let Some(user) = users::Entity::find()
+    .   filter(users::Column::Token.eq(token))
+        .one(&database)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?{
+            user.into_active_model()
+        }else{
+            return  Err(StatusCode::UNAUTHORIZED);
+        };
+    user.token = Set(None);
+    let _ = user.save(&database).
+        await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR);
+    Ok(())
 }
