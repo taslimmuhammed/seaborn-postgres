@@ -4,9 +4,9 @@ mod atomic_update;
 mod partial_update;
 mod delete;
 mod users;
-
+mod guard;
 use core::sync;
-
+use guard::guard;
 use users::{create_account, login_user, logout};
 use delete::{delete_task, soft_delete};
 use create_tasks::create_tasks;
@@ -15,13 +15,14 @@ use atomic_update::atomic_update;
 use partial_update::partial_update;
 use sea_orm::DatabaseConnection;
 use axum::{
-    extract::State, http::{HeaderMap, Method}, routing::{delete, get, patch, post, put}, Extension, Router
+    extract::State, http::{HeaderMap, Method}, middleware, routing::{delete, get, patch, post, put}, Extension, Router
 };
 use tower_http::cors::{Any, CorsLayer};
 pub fn create_routes(database:DatabaseConnection)-> Router{
     let cors  = CorsLayer::new().allow_methods([Method::GET, Method::POST]).allow_origin(Any);
     let app = Router::new()
         .route("/create_tasks", post(create_tasks))
+        .layer(middleware::from_fn(guard))
         .route("/get_all_tasks", get(get_all_task))
         .route("/get_one_task/:id", get(get_one_task))
         .route("/atomic_update/:task_id", put(atomic_update))
@@ -30,7 +31,7 @@ pub fn create_routes(database:DatabaseConnection)-> Router{
         .route("/soft_delete/:task_id", delete(soft_delete))
         .route("/create_account", post(create_account))
         .route("/users/login", post(login_user))
-        .route("/users/login", post(logout))
+        .route("/users/logout", post(logout))
         .route("/test", post(test_func))
         .layer(Extension(database))
         .layer(cors);
