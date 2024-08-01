@@ -8,7 +8,8 @@ pub struct ResponseTask{
     title:String,
     priority:Option<String>,
     description:Option<String>,
-    deleted_at: Option<DateTimeWithTimeZone>
+    deleted_at: Option<DateTimeWithTimeZone>,
+    user_id:Option<i32>
 }
 #[derive( Deserialize)]
 pub struct PriorityQuery{
@@ -26,7 +27,8 @@ pub async fn get_one_task(
             title:task.title,
             priority:task.priority,
             description:task.description,
-            deleted_at:task.deleted_at
+            deleted_at:task.deleted_at,
+            user_id:task.user_id
         }))
     }else{
         Err(StatusCode::NOT_FOUND)
@@ -57,7 +59,8 @@ pub async fn get_all_task(
             title:task.title,
             priority:task.priority,
             description:task.description,
-            deleted_at:task.deleted_at
+            deleted_at:task.deleted_at,
+            user_id:task.user_id
         })
         .collect();
     Ok(Json(tasks)) 

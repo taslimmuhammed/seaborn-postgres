@@ -21,7 +21,7 @@ use tower_http::cors::{Any, CorsLayer};
 pub fn create_routes(database:DatabaseConnection)-> Router{
     let cors  = CorsLayer::new().allow_methods([Method::GET, Method::POST]).allow_origin(Any);
     let app = Router::new()
-        .route("/tasks", post(create_tasks))
+        .route("/create_tasks", post(create_tasks))
         .route("/get_all_tasks", get(get_all_task))
         .route("/get_one_task/:id", get(get_one_task))
         .route("/atomic_update/:task_id", put(atomic_update))
