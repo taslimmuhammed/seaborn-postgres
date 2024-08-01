@@ -3,9 +3,11 @@ mod get_task;
 mod atomic_update;
 mod partial_update;
 mod delete;
-mod create_accout;
+mod users;
 
-use create_accout::create_account;
+use core::sync;
+
+use users::{create_account, login_user};
 use delete::{delete_task, soft_delete};
 use create_tasks::create_tasks;
 use get_task::{get_one_task, get_all_task};
@@ -13,7 +15,7 @@ use atomic_update::atomic_update;
 use partial_update::partial_update;
 use sea_orm::DatabaseConnection;
 use axum::{
-    http::Method, routing::{delete, get, patch, post, put}, Extension, Router
+    extract::State, http::{HeaderMap, Method}, routing::{delete, get, patch, post, put}, Extension, Router
 };
 use tower_http::cors::{Any, CorsLayer};
 pub fn create_routes(database:DatabaseConnection)-> Router{
@@ -27,7 +29,19 @@ pub fn create_routes(database:DatabaseConnection)-> Router{
         .route("/delete/:task_id", delete(delete_task))
         .route("/soft_delete/:task_id", delete(soft_delete))
         .route("/create_account", post(create_account))
+        .route("/users/login", post(login_user))
+        .route("/test", post(test_func))
         .layer(Extension(database))
         .layer(cors);
     app
+}
+
+pub async fn test_func(
+    method: Method,
+    headers: HeaderMap,
+    // `State` is also an extractor so it needs to be before `body`
+){
+    // // let x = headers.get("autherization");
+    // let x = headers.get("authorization").unwrap();
+    // dbg!(x.to_str());
 }

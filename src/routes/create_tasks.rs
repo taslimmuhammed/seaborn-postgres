@@ -1,4 +1,4 @@
-use axum::{Extension, Json};
+use axum::{http::{header, HeaderMap}, Extension, Json};
 use sea_orm::{ActiveModelTrait, DatabaseConnection, Set};
 use crate::database::tasks;
 use serde::Deserialize;
@@ -10,8 +10,12 @@ pub struct RequestTask{
     description:Option<String>
 }
 pub async fn create_tasks(
+    headers:HeaderMap,
     Extension(database):Extension<DatabaseConnection>,
-    Json(request_task):Json<RequestTask>){
+    Json(request_task):Json<RequestTask>,
+){
+    let token = headers.get("autherization").unwrap().to_str().unwrap();
+
     let task = tasks::ActiveModel{
         priority:Set(request_task.priority), // Some is only required for optional variables
         title:Set(request_task.title),
