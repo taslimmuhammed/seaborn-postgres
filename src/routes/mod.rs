@@ -5,7 +5,6 @@ mod partial_update;
 mod delete;
 mod users;
 mod guard;
-use core::sync;
 use guard::guard;
 use users::{create_account, login_user, logout};
 use delete::{delete_task, soft_delete};
@@ -15,7 +14,7 @@ use atomic_update::atomic_update;
 use partial_update::partial_update;
 use sea_orm::DatabaseConnection;
 use axum::{
-    extract::State, http::{HeaderMap, Method}, middleware, routing::{delete, get, patch, post, put}, Extension, Router
+    http::Method, middleware, routing::{delete, get, patch, post, put}, Extension, Router
 };
 use tower_http::cors::{Any, CorsLayer};
 pub fn create_routes(database:DatabaseConnection)-> Router{
@@ -32,18 +31,18 @@ pub fn create_routes(database:DatabaseConnection)-> Router{
         .route("/users/signup", post(create_account))
         .route("/users/login", post(login_user))
         .route("/users/logout", post(logout))
-        .route("/test", post(test_func))
+        // .route("/test", post(test_func))
         .layer(Extension(database))
         .layer(cors);
     app
 }
 
-pub async fn test_func(
-    method: Method,
-    headers: HeaderMap,
-    // `State` is also an extractor so it needs to be before `body`
-){
-    // // let x = headers.get("autherization");
-    // let x = headers.get("authorization").unwrap();
-    // dbg!(x.to_str());
-}
+// pub async fn test_func(
+//     method: Method,
+//     headers: HeaderMap,
+//     // `State` is also an extractor so it needs to be before `body`
+// ){
+//     // // let x = headers.get("autherization");
+//     // let x = headers.get("authorization").unwrap();
+//     // dbg!(x.to_str());
+// }
