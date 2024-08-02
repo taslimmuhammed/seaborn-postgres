@@ -2,7 +2,7 @@ use axum::{http::{HeaderMap, StatusCode}, Extension, Json};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,IntoActiveModel, Set};
 use serde::{Deserialize, Serialize};
 
-use crate::database::users;
+use crate::{database::users, utils::jwt::create};
 
 #[derive(Deserialize)]
 pub struct RequestAccount{
@@ -22,7 +22,7 @@ pub async fn create_account(
     let new_user = users::ActiveModel{
         username: Set(account.username),
         password: Set(hash_password(account.password)?),
-        token: Set(Some(String::from("9823dwnoceu89384dj3d093"))),
+        token: Set(Some(create()?)),
         ..Default::default()
     }.save(&database)
     .await
@@ -48,7 +48,7 @@ pub async fn login_user(
             return Err(StatusCode::UNAUTHORIZED);
         }
         println!("user found");
-        let new_token = "ijrnu394r83nr9328di239".to_owned();
+        let new_token = create()?;
         let mut user = db_user.into_active_model();
         user.token = Set(Some(new_token));
         let saved_user = user.save(&database)
