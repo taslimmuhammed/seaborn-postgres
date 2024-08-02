@@ -5,7 +5,6 @@ use chrono::Utc;
 use dotenvy_macro::dotenv;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
-use sqlx::decode;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Claims{
