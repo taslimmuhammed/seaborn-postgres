@@ -24,7 +24,7 @@ pub fn create()-> Result<String, StatusCode>{
     encode(&Header::default(), &claim, &key).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }
 
-pub fn is_valid(token:&str)-> Result<bool, StatusCode>{
+pub fn is_valid(token:&str)-> Result<(), StatusCode>{
     let secret: &'static str = dotenv!("JWT_SECRET");
     let key = DecodingKey::from_secret(secret.as_bytes());
     decode::<Claims>(token, &key, &Validation::new(Algorithm::HS256))
@@ -34,6 +34,5 @@ pub fn is_valid(token:&str)-> Result<bool, StatusCode>{
                 _ => StatusCode::INTERNAL_SERVER_ERROR
             }
         )?;
-    Ok(true)
-
+    Ok(())
 }
