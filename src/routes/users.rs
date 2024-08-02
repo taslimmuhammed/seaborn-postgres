@@ -21,7 +21,7 @@ pub async fn create_account(
 )->Result<Json<ResponseAccount>, StatusCode>{
     let new_user = users::ActiveModel{
         username: Set(account.username),
-        password: Set(account.password),
+        password: Set(hash_password(account.password)?),
         token: Set(Some(String::from("9823dwnoceu89384dj3d093"))),
         ..Default::default()
     }.save(&database)
@@ -43,8 +43,11 @@ pub async fn login_user(
         .one(&database)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-
     if let Some(db_user) = db_user{
+        if !verify_password(account.password, &db_user.password)?{
+            return Err(StatusCode::UNAUTHORIZED);
+        }
+        println!("user found");
         let new_token = "ijrnu394r83nr9328di239".to_owned();
         let mut user = db_user.into_active_model();
         user.token = Set(Some(new_token));
@@ -83,4 +86,12 @@ pub async fn logout(
         await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR);
     Ok(())
+}
+
+pub fn hash_password(password:String)->Result<String, StatusCode>{
+    bcrypt::hash(password, 10).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
+pub fn verify_password(password:String, hash:&str)-> Result<bool, StatusCode>{
+    bcrypt::verify(password, &hash).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }

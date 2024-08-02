@@ -14,3 +14,4 @@ sqlx = { version = "0.7.4", features = ["runtime-tokio"] }
 serde = "1.0.204"
 serde_with = "3.9.0"
 chrono = "0.4.38"
+bcrypt = "0.15.1"

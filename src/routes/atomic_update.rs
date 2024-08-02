@@ -5,7 +5,6 @@ use serde::Deserialize;
 use crate::database::tasks::{self, Entity as Tasks};
 #[derive(Deserialize)]
 pub struct RequestTask {
-    id: i32,
     pub priority: Option<String>,
     pub title: String,
     pub completed_at: Option<DateTimeWithTimeZone>,

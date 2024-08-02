@@ -1,6 +1,6 @@
-use axum::{http::{header, HeaderMap, StatusCode}, Extension, Json};
-use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
-use crate::database::{tasks, users::{self, Model}};
+use axum::{http::StatusCode, Extension, Json};
+use sea_orm::{ActiveModelTrait, DatabaseConnection, Set};
+use crate::database::{tasks, users::Model};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -26,6 +26,6 @@ pub async fn create_tasks(
     Ok(())
 }
 
-fn remove_bearer_prefix(token: &str) -> &str {
-    token.trim_start_matches("Bearer ").trim()
-}
+// fn remove_bearer_prefix(token: &str) -> &str {
+//     token.trim_start_matches("Bearer ").trim()
+// }

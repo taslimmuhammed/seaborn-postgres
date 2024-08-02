@@ -29,7 +29,7 @@ pub fn create_routes(database:DatabaseConnection)-> Router{
         .route("/partial_update/:task_id",patch(partial_update))
         .route("/delete/:task_id", delete(delete_task))
         .route("/soft_delete/:task_id", delete(soft_delete))
-        .route("/create_account", post(create_account))
+        .route("/users/signup", post(create_account))
         .route("/users/login", post(login_user))
         .route("/users/logout", post(logout))
         .route("/test", post(test_func))
